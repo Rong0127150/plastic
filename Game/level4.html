@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>Level 4 - 綠色購物行動</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fefae0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    #musicToggleBtn {
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #a3b18a;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #musicToggleBtn:hover {
+      background-color: #588157;
+    }
+    .drag-item {
+      font-size: 3rem;
+      margin: 10px;
+      cursor: move;
+      display: inline-block;
+    }
+    .drop-zone {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      width: 40%;
+      min-height: 120px;
+      display: inline-block;
+      margin: 10px;
+      padding: 10px;
+      vertical-align: top;
+    }
+    .drop-zone h3 {
+      margin-top: 0;
+    }
+    #message {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      min-height: 2em;
+    }
+    #retryBtn, #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: none;
+      border: none;
+      border-radius: 5px;
+      background-color: #a3b18a;
+      color: white;
+    }
+    #retryBtn:hover, #nextBtn:hover {
+      background-color: #588157;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景音樂 -->
+  <audio id="bg-music" src="images/music.mp3" loop></audio>
+
+  <h1>🎁 Level 4：綠色購物行動</h1>
+  <button id="musicToggleBtn">🔈 開啟音樂</button>
+
+  <p>將商品拖曳分類到「環保」或「不環保」的區域中！</p>
+
+  <div id="items">
+    <span class="drag-item" draggable="true" data-type="green" id="item1">🥦</span>
+    <span class="drag-item" draggable="true" data-type="green" id="item2">🧊</span>
+    <span class="drag-item" draggable="true" data-type="bad" id="item3">🥢</span>
+    <span class="drag-item" draggable="true" data-type="bad" id="item4">🎉</span>
+  </div>
+
+  <div>
+    <div class="drop-zone" id="greenZone" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <h3>🌱 環保</h3>
+    </div>
+
+    <div class="drop-zone" id="badZone" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <h3>🚫 不環保</h3>
+    </div>
+  </div>
+
+  <div id="message"></div>
+
+  <button id="retryBtn" onclick="retry()">重新挑戰</button>
+  <button id="nextBtn" onclick="nextLevel()">前往 Level 5</button>
+
+  <script>
+    const bgm = document.getElementById('bg-music');
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    let musicOn = false;
+
+    musicToggleBtn.addEventListener('click', () => {
+      if (musicOn) {
+        bgm.pause();
+        musicToggleBtn.textContent = "🔈 開啟音樂";
+      } else {
+        bgm.play().catch(() => {});
+        musicToggleBtn.textContent = "🔊 關閉音樂";
+      }
+      musicOn = !musicOn;
+    });
+
+    let totalItems = 4;
+    let correctDrops = 0;
+    let gameOver = false;
+
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      if (gameOver) return;
+
+      const data = ev.dataTransfer.getData("text");
+      const dragged = document.getElementById(data);
+      const expectedType = dragged.getAttribute("data-type");
+      const dropZone = ev.currentTarget.id;
+
+      if (
+        (dropZone === "greenZone" && expectedType === "green") ||
+        (dropZone === "badZone" && expectedType === "bad")
+      ) {
+        ev.currentTarget.appendChild(dragged);
+        dragged.setAttribute("draggable", "false");
+        dragged.style.opacity = "0.5";
+        correctDrops++;
+        if (correctDrops === totalItems) {
+          document.getElementById("message").style.color = "green";
+          document.getElementById("message").innerText = "🎉 恭喜你正確分類所有商品！";
+          document.getElementById("nextBtn").style.display = "inline-block";
+          gameOver = true;
+        }
+      } else {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "❌ 分類錯誤，再試一次！";
+        document.getElementById("retryBtn").style.display = "inline-block";
+        gameOver = true;
+      }
+    }
+
+    document.querySelectorAll(".drag-item").forEach(item => {
+      item.addEventListener("dragstart", ev => {
+        ev.dataTransfer.setData("text", ev.target.id);
+      });
+    });
+
+    function retry() {
+      location.reload();
+    }
+
+    function nextLevel() {
+      window.location.href = "level5.html";
+    }
+  </script>
+</body>
+</html>

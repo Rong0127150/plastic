@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>Level 3 - 環保交通選擇</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #e6f9f5;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+    #musicToggleBtn {
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #20c997;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #musicToggleBtn:hover {
+      background-color: #198754;
+    }
+    .emoji {
+      font-size: 4rem;
+      margin: 15px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      display: inline-block;
+    }
+    .emoji:hover {
+      transform: scale(1.2);
+    }
+    #message {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      min-height: 2em;
+    }
+    #retryBtn, #nextBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: none;
+      border: none;
+      border-radius: 5px;
+      background-color: #20c997;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    #retryBtn:hover, #nextBtn:hover {
+      background-color: #198754;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景音樂 -->
+  <audio id="bg-music" src="images/music.mp3" loop></audio>
+
+  <h1>🚗 Level 3：環保交通選擇</h1>
+  <button id="musicToggleBtn">🔈 開啟音樂</button>
+
+  <p>哪一個交通工具最環保？</p>
+
+  <div id="choices">
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🚘</span>
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🚠</span>
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🚀</span>
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🚢</span>
+    <span class="emoji" data-correct="true" onclick="checkAnswer(this)">🚍</span> <!-- 公車（正確） -->
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">✈</span>
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🛸</span>
+    <span class="emoji" data-correct="false" onclick="checkAnswer(this)">🚘</span>
+  </div>
+
+  <div id="message"></div>
+
+  <button id="retryBtn" onclick="retry()">重新挑戰</button>
+  <button id="nextBtn" onclick="nextLevel()">前往 Level 4</button>
+
+  <script>
+    const bgm = document.getElementById('bg-music');
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    let musicOn = false;
+
+    musicToggleBtn.addEventListener('click', () => {
+      if (musicOn) {
+        bgm.pause();
+        musicToggleBtn.textContent = "🔈 開啟音樂";
+      } else {
+        bgm.play().catch(() => {});
+        musicToggleBtn.textContent = "🔊 關閉音樂";
+      }
+      musicOn = !musicOn;
+    });
+
+    let gameOver = false;
+
+    function checkAnswer(el) {
+      if (gameOver) return;
+
+      const correct = el.getAttribute("data-correct") === "true";
+      if (correct) {
+        document.getElementById("message").style.color = "green";
+        document.getElementById("message").innerText = "✅ 太棒了！你選對了！";
+        document.getElementById("nextBtn").style.display = "inline-block";
+      } else {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").innerText = "❌ 答錯了，再試一次！";
+        document.getElementById("retryBtn").style.display = "inline-block";
+      }
+      gameOver = true;
+    }
+
+    function retry() {
+      location.reload();
+    }
+
+    function nextLevel() {
+      window.location.href = "level4.html";
+    }
+  </script>
+</body>
+</html>
